@@ -1,0 +1,3 @@
+rootProject.name = 'h2o-pam'
+
+include 'pam'

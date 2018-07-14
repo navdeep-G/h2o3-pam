@@ -9,5 +9,7 @@
 ### Cons:
 - Inherently `O(n^2)` time, and possibly space depending on implementation. 
 
-### Reference: 
+### References: 
 * pp.102-104 of `Finding Groups in Data by Kaufman and Rousseeuw`.
+* [https://en.wikipedia.org/wiki/K-medoids](https://en.wikipedia.org/wiki/K-medoids)
+* [https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Clustering/Partitioning_Around_Medoids_(PAM)](https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Clustering/Partitioning_Around_Medoids_(PAM))

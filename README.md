@@ -7,7 +7,7 @@
 - Outperforms k-means for some applications
 
 ### Cons:
-- Inherently `O(n^2)` time, and possibly space depending on implementation. 
+- Inherently `O(n^2)` time and possibly space depending on implementation. 
 
 ### References: 
 * pp.102-104 of `Finding Groups in Data by Kaufman and Rousseeuw`.

@@ -11,7 +11,7 @@ dependencies {
     compile "ai.h2o:h2o-core:${h2oProjectVersion}"
     compile "ai.h2o:h2o-ext-xgboost:${h2oProjectVersion}"
     compile "ai.h2o:h2o-genmodel-ext-xgboost:${h2oProjectVersion}"
-    compile "ai.h2o:h2o-genmodel:3.14.0.6"
+    compile "ai.h2o:h2o-genmodel:${h2oProjectVersion}"
     // Define dependency on H2O algorithm
     compile "ai.h2o:h2o-algos:${h2oProjectVersion}"
     // Demands web support

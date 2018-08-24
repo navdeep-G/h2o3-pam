@@ -1,3 +1,4 @@
-hex.schemas.PAMModelV99
-hex.schemas.PAMV99
-hex.schemas.PAMModelV99$PAMModelOutputV99
+hex.schemas.PAMModelV3$PAMModelOutputV3
+hex.schemas.PAMModelV3
+hex.schemas.PAMV3$PAMParametersV3
+hex.schemas.PAMV3

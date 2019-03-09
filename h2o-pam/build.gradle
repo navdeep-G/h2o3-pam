@@ -61,10 +61,10 @@ ext {
     useSnapshotH2o = false
     h2oProjectBranchNumber = "3.22.1"
     if (useSnapshotH2o) {
-        h2oProjectBuildNumber = "3"
+        h2oProjectBuildNumber = "5"
     }
     else {
-        h2oProjectBuildNumber = "3"
+        h2oProjectBuildNumber = "5"
     }
     h2oProjectVersion = "${h2oProjectBranchNumber}.${h2oProjectBuildNumber}"
 }

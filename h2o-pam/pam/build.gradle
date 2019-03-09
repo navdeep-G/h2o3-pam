@@ -5,27 +5,26 @@ description = "PAM"
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    // Define dependency on H2O MLI Algos
-    compile project(':pam')
-    // Define dependency on core of H2O
+    // H2O core dependency
     compile "ai.h2o:h2o-core:${h2oProjectVersion}"
     compile "ai.h2o:h2o-ext-xgboost:${h2oProjectVersion}"
+    // H2O genmodel dependency
     compile "ai.h2o:h2o-genmodel-ext-xgboost:${h2oProjectVersion}"
     compile "ai.h2o:h2o-genmodel:${h2oProjectVersion}"
-    // Define dependency on H2O algorithm
+    // H2O algos dependency
     compile "ai.h2o:h2o-algos:${h2oProjectVersion}"
-    // Demands web support
+    // H2O web dependency
     compile "ai.h2o:h2o-web:${h2oProjectVersion}"
-    // Contains H2O entry points
+    // H2O jetty dependency
+    compile "ai.h2o:h2o-jetty-8:${h2oProjectVersion}"
+    // H2O entry points
     compile "ai.h2o:h2o-app:${h2oProjectVersion}"
-    // Local genmodel
-    compile "ai.h2o:h2o-genmodel:${h2oProjectVersion}"
-    // Define dependency on AutoML from H2O
+    // H2O Automl
     compile "ai.h2o:h2o-automl:${h2oProjectVersion}"
 
-    // Test dependencies
+    // H2O test dependencies
     testCompile "ai.h2o:h2o-core:${h2oProjectVersion}:test"
-    // H2O uses jUnit for testing
+    // jUnit dependency
     testCompile 'junit:junit:4.12'
 }
 

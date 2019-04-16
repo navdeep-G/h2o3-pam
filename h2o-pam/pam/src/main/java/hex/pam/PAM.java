@@ -70,6 +70,8 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                 DKV.put(ddreerKey,ddreer);
 
                 model._output._medoids = new double[_parms._k][f.numCols()];
+                model._output._centers_raw = new double[_parms._k][f.numCols()];
+                model._output._mode = new int[f.vecs().length];
                 model._output._medoid_rows = new long[_parms._k]; // parallel array to the above medoids array. holds the row numbers for the respective medoids.
 
                 // BUILD phase - greedily pick the initial k medoids

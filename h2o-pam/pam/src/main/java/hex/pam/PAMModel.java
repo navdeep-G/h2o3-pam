@@ -25,7 +25,6 @@ public class PAMModel extends ClusteringModel<PAMModel,PAMModel.PAMParameters,PA
     public int _swap_iterations; // number of swap iterations executed
     public long[/*k*/] _medoid_rows; // row numbers of medoids
     public double[/*k*/][/*p*/] _medoids; // the actual medoids
-    //public double[/*k*/][/*p*/] _centers_raw;
     public double _sum_of_dissimilarities; // sum of dissimilarities of each observation to its medoid
     public int[/*iterations*/] _k = new int[]{0};
     public PAMOutput( PAM b ) { super(b); }

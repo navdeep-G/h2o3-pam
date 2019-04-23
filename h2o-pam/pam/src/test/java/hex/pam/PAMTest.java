@@ -16,6 +16,7 @@ public class PAMTest extends TestUtil {
     Key raw = Key.make("1D_pam_data_raw");
     Key parsed = Key.make("1D_pam_data_parsed");
     Frame tf = null;
+    Frame preds = null;
     try {
       FVecTest.makeByteVec(raw, "x\n0\n1\n2\n10\n11\n12\n20\n21\n22");
       tf = ParseDataset.parse(parsed, raw);
@@ -26,6 +27,7 @@ public class PAMTest extends TestUtil {
       parms._do_swap = false;
 
       kmm = new PAM(parms).trainModel().get();
+      preds = kmm.score(tf);
 
       assertTrue(kmm._output._medoid_rows.length == 3);
       assertTrue(contains(kmm._output._medoid_rows,1)); // row 1 = 1
@@ -34,6 +36,7 @@ public class PAMTest extends TestUtil {
     } finally {
       if( tf  != null ) tf.delete();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
@@ -42,6 +45,7 @@ public class PAMTest extends TestUtil {
     Key raw = Key.make("1D_pam_data_raw");
     Key parsed = Key.make("1D_pam_data_parsed");
     Frame tf = null;
+    Frame preds = null;
     try {
       FVecTest.makeByteVec(raw, "x\n0\n1\n2\n51\n100\n101\n102");
       tf = ParseDataset.parse(parsed, raw);
@@ -52,6 +56,7 @@ public class PAMTest extends TestUtil {
       parms._do_swap = false;
 
       kmm = new PAM(parms).trainModel().get();
+      preds = kmm.score(tf);
 
       assertTrue(kmm._output._medoid_rows.length == 2);
       assertTrue(contains(kmm._output._medoid_rows,3));
@@ -59,6 +64,7 @@ public class PAMTest extends TestUtil {
     } finally {
       if( tf  != null ) tf.delete();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
@@ -67,6 +73,7 @@ public class PAMTest extends TestUtil {
     Key raw = Key.make("1D_pam_data_raw");
     Key parsed = Key.make("1D_pam_data_parsed");
     Frame tf = null;
+    Frame preds = null;
     try {
       FVecTest.makeByteVec(raw, "x\n0\n1\n2\n51\n100\n101\n102");
       tf = ParseDataset.parse(parsed, raw);
@@ -78,6 +85,7 @@ public class PAMTest extends TestUtil {
       parms._do_swap = false;
 
       kmm = new PAM(parms).trainModel().get();
+      preds = kmm.score(tf);
 
       assertTrue(kmm._output._medoid_rows.length == 2);
       assertTrue(contains(kmm._output._medoid_rows,3));
@@ -85,12 +93,14 @@ public class PAMTest extends TestUtil {
     } finally {
       if( tf  != null ) tf.delete();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
   @Test public void testBUILDPhaseIris() {
     PAMModel kmm = null;
     Frame tf = null;
+    Frame preds = null;
     try {
       tf = parse_test_file(Key.make("iris.hex"),"smalldata/iris/iris.csv");
 
@@ -100,6 +110,7 @@ public class PAMTest extends TestUtil {
       parms._do_swap = false;
 
       kmm = new PAM(parms).trainModel().get();
+      preds = kmm.score(tf);
 
       assertTrue(kmm._output._medoid_rows.length == 3);
       assertTrue(contains(kmm._output._medoid_rows,7));
@@ -109,12 +120,14 @@ public class PAMTest extends TestUtil {
     } finally {
       if( tf  != null ) tf.delete();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
   @Test public void testBUILDPhaseProstate() {
     PAMModel kmm = null;
     Frame tf = null;
+    Frame preds = null;
     try {
       tf = parse_test_file(Key.make("prostate.hex"),"smalldata/prostate/prostate.csv");
 
@@ -124,6 +137,7 @@ public class PAMTest extends TestUtil {
       parms._do_swap = false;
 
       kmm = new PAM(parms).trainModel().get();
+      preds = kmm.score(tf);
 
       assertTrue(kmm._output._medoid_rows.length == 8);
       assertTrue(contains(kmm._output._medoid_rows,17));
@@ -138,12 +152,14 @@ public class PAMTest extends TestUtil {
     } finally {
       if( tf  != null ) tf.delete();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
   @Test public void testBUILDPhaseProstateEuclidean() {
     PAMModel kmm = null;
     Frame tf = null;
+    Frame preds = null;
     try {
       tf = parse_test_file(Key.make("prostate.hex"),"smalldata/prostate/prostate.csv");
 
@@ -154,6 +170,7 @@ public class PAMTest extends TestUtil {
       parms._do_swap = false;
 
       kmm = new PAM(parms).trainModel().get();
+      preds = kmm.score(tf);
 
       assertTrue(kmm._output._medoid_rows.length == 8);
       assertTrue(contains(kmm._output._medoid_rows,17));
@@ -167,6 +184,7 @@ public class PAMTest extends TestUtil {
     } finally {
       if( tf  != null ) tf.delete();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
@@ -175,6 +193,7 @@ public class PAMTest extends TestUtil {
     Key raw = Key.make("1D_pam_data_raw");
     Key parsed = Key.make("1D_pam_data_parsed");
     Frame fr = null;
+    Frame preds = null;
     try {
       FVecTest.makeByteVec(raw, "x\n1\n10\n100");
       fr = ParseDataset.parse(parsed, raw);
@@ -184,12 +203,15 @@ public class PAMTest extends TestUtil {
       parms._k = 1;
 
       kmm = new PAM(parms).trainModel().get();
+      preds = kmm.score(fr);
+
       assertTrue(1==kmm._output._medoid_rows[0]);
       assertTrue(10==kmm._output._medoids[0][0]);
 
     } finally {
       if( fr  != null ) fr.delete();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
@@ -198,6 +220,7 @@ public class PAMTest extends TestUtil {
     Key raw = Key.make("1D_pam_data_raw");
     Key parsed = Key.make("1D_pam_data_parsed");
     Frame fr = null;
+    Frame preds = null;
     try {
       FVecTest.makeByteVec(raw, "x\n0\n1\n2\n10\n11\n12\n20\n21\n22");
       fr = ParseDataset.parse(parsed, raw);
@@ -207,18 +230,22 @@ public class PAMTest extends TestUtil {
       parms._k = 3;
 
       kmm = new PAM(parms).trainModel().get();
+      preds = kmm.score(fr);
+
       assertTrue(contains(kmm._output._medoid_rows,4));
       assertTrue(contains(kmm._output._medoid_rows,1));
       assertTrue(contains(kmm._output._medoid_rows,7));
     } finally {
       if( fr  != null ) fr.delete();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
   @Test public void testIris() {
     PAMModel kmm = null;
     Frame fr = null;
+    Frame preds = null;
     try {
       fr = parse_test_file("smalldata/iris/iris_wheader.csv");
 
@@ -228,6 +255,8 @@ public class PAMTest extends TestUtil {
 
       Job<PAMModel> job = new PAM(parms).trainModel();
       kmm = job.get();
+      preds = kmm.score(fr);
+
       assertTrue(contains(kmm._output._medoid_rows,7));
       assertTrue(contains(kmm._output._medoid_rows,91));
       assertTrue(contains(kmm._output._medoid_rows,69));
@@ -238,12 +267,14 @@ public class PAMTest extends TestUtil {
     } finally {
       if( fr  != null ) fr .remove();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
   @Test public void testProstate() {
     PAMModel kmm = null;
     Frame fr = null;
+    Frame preds = null;
     try {
       fr = parse_test_file("smalldata/prostate/prostate.csv");
 
@@ -253,6 +284,8 @@ public class PAMTest extends TestUtil {
 
       Job<PAMModel> job = new PAM(parms).trainModel();
       kmm = job.get();
+      preds = kmm.score(fr);
+
       assertTrue(contains(kmm._output._medoid_rows,49));
       assertTrue(contains(kmm._output._medoid_rows,132));
       assertTrue(contains(kmm._output._medoid_rows,214));
@@ -264,12 +297,14 @@ public class PAMTest extends TestUtil {
     } finally {
       if( fr  != null ) fr .remove();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
   @Test public void testProstateEuclidean() {
     PAMModel kmm = null;
     Frame fr = null;
+    Frame preds = null;
     try {
       fr = parse_test_file("smalldata/prostate/prostate.csv");
 
@@ -280,6 +315,8 @@ public class PAMTest extends TestUtil {
 
       Job<PAMModel> job = new PAM(parms).trainModel();
       kmm = job.get();
+      preds = kmm.score(fr);
+
       assertTrue(contains(kmm._output._medoid_rows,47));
       assertTrue(contains(kmm._output._medoid_rows,125));
       assertTrue(contains(kmm._output._medoid_rows,193));
@@ -291,12 +328,14 @@ public class PAMTest extends TestUtil {
     } finally {
       if( fr  != null ) fr .remove();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 
   @Test public void testProstate2() {
     PAMModel kmm = null;
     Frame fr = null;
+    Frame preds = null;
     try {
       fr = parse_test_file("smalldata/prostate/prostate.csv");
 
@@ -306,6 +345,8 @@ public class PAMTest extends TestUtil {
 
       Job<PAMModel> job = new PAM(parms).trainModel();
       kmm = job.get();
+      preds = kmm.score(fr);
+
       assertTrue(contains(kmm._output._medoid_rows,15));
       assertTrue(contains(kmm._output._medoid_rows,40));
       assertTrue(contains(kmm._output._medoid_rows,92));
@@ -320,6 +361,7 @@ public class PAMTest extends TestUtil {
     } finally {
       if( fr  != null ) fr .remove();
       if( kmm != null ) kmm.delete();
+      if( preds != null) preds.delete();
     }
   }
 

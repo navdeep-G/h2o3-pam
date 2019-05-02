@@ -2,11 +2,14 @@ package hex.pam;
 
 import hex.ClusteringModelBuilder;
 import hex.ModelCategory;
-import water.*;
+import water.DKV;
+import water.Key;
+import water.MRTask;
+import water.Scope;
 import water.fvec.Chunk;
-import water.util.ArrayUtils;
 import water.fvec.Frame;
 import water.fvec.Vec;
+import water.util.ArrayUtils;
 import water.util.Log;
 import water.util.TwoDimTable;
 
@@ -17,26 +20,46 @@ import java.util.List;
 /**
  * Partitioning Around Medoids (PAM)
  * Based on p. 102-104 of "Finding Groups in Data" by Kaufman and Rousseeuw
- *
  */
 
-public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,PAMModel.PAMOutput> {
-    @Override public ModelCategory[] can_build() { return new ModelCategory[]{ ModelCategory.Clustering, }; }
-    public enum DissimilarityMeasure {EUCLIDEAN, MANHATTAN}
-    @Override public BuilderVisibility builderVisibility() { return BuilderVisibility.Experimental; }
-    public PAM(PAMModel.PAMParameters parms ) { super(parms); init(false); }
-    public PAM(boolean startup_once) { super(new PAMModel.PAMParameters(),startup_once); }
-    @Override protected PAMDriver trainModelImpl() { return new PAMDriver(); }
+public class PAM extends ClusteringModelBuilder<PAMModel, PAMModel.PAMParameters, PAMModel.PAMOutput> {
+    @Override
+    public ModelCategory[] can_build() {
+        return new ModelCategory[]{ModelCategory.Clustering,};
+    }
 
-    @Override public void init(boolean expensive) {
+    public enum DissimilarityMeasure {EUCLIDEAN, MANHATTAN}
+
+    @Override
+    public BuilderVisibility builderVisibility() {
+        return BuilderVisibility.Experimental;
+    }
+
+    public PAM(PAMModel.PAMParameters parms) {
+        super(parms);
+        init(false);
+    }
+
+    public PAM(boolean startup_once) {
+        super(new PAMModel.PAMParameters(), startup_once);
+    }
+
+    @Override
+    protected PAMDriver trainModelImpl() {
+        return new PAMDriver();
+    }
+
+    @Override
+    public void init(boolean expensive) {
         super.init(expensive);
         if (_parms._initial_medoids != null && _parms._initial_medoids.length != _parms._k)
-            error("_initial_medoids","must have _k rows");
+            error("_initial_medoids", "must have _k rows");
     }
 
     // ----------------------
     private class PAMDriver extends Driver {
-        @Override public void compute2() {
+        @Override
+        public void compute2() {
             PAMModel model = null;
             Frame ddreer = null;
             try {
@@ -59,7 +82,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                 // well as in "Finding Groups in Data."
                 Key ddreerKey = Key.make("DDREER");
 
-                ddreer = new Frame(ddreerKey, new String[]{"D","DR", "E", "ER", "tempD", "tempDR", "tempE", "tempER", "bestD",
+                ddreer = new Frame(ddreerKey, new String[]{"D", "DR", "E", "ER", "tempD", "tempDR", "tempE", "tempER", "bestD",
                         "bestDR", "bestE", "bestER"},
                         new Vec[]{f.anyVec().makeCon(Double.MAX_VALUE), f.anyVec().makeCon(-1),
                                 f.anyVec().makeCon(Double.MAX_VALUE), f.anyVec().makeCon(-1),
@@ -67,7 +90,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                                 f.anyVec().makeCon(Double.MAX_VALUE), f.anyVec().makeCon(-1),
                                 f.anyVec().makeCon(Double.MAX_VALUE), f.anyVec().makeCon(-1),
                                 f.anyVec().makeCon(Double.MAX_VALUE), f.anyVec().makeCon(-1)});
-                DKV.put(ddreerKey,ddreer);
+                DKV.put(ddreerKey, ddreer);
 
                 model._output._medoids = new double[_parms._k][f.numCols()];
 //                Hack to make it work with perRow() in ModelMetricsClustering. If this field is not set, then we
@@ -133,7 +156,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                 buildPhase(f, ddreer, _parms._k, model._output._medoids, model._output._medoid_rows, _parms._dissimilarity_measure);
                 // TODO compute initial DDREER when _initial_medoids provided
 
-                model._output._sum_of_dissimilarities = ddreer.vec(0).mean()*ddreer.numRows();
+                model._output._sum_of_dissimilarities = ddreer.vec(0).mean() * ddreer.numRows();
                 model._output._swap_iterations = 0;
                 model._output._model_summary = createModelSummaryTable(model._output);
                 model.update(_job);
@@ -145,7 +168,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                 while (_parms._do_swap && (_parms._k > 1 || _parms._initial_medoids != null) && swapIteration(f, ddreer,
                         _parms._k, model._output._medoids, model._output._medoid_rows, _parms._dissimilarity_measure)) {
                     model._output._swap_iterations++;
-                    model._output._sum_of_dissimilarities = ddreer.vec(0).mean()*ddreer.numRows();
+                    model._output._sum_of_dissimilarities = ddreer.vec(0).mean() * ddreer.numRows();
                     model.update(_job);
                     _job.update(1);
                     model._output._model_summary = createModelSummaryTable(model._output);
@@ -171,8 +194,12 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
         List<String> colHeaders = new ArrayList<>();
         List<String> colTypes = new ArrayList<>();
         List<String> colFormat = new ArrayList<>();
-        colHeaders.add("Number of Swap Iterations"); colTypes.add("long"); colFormat.add("%d");
-        colHeaders.add("Sum of Dissimilarites"); colTypes.add("double"); colFormat.add("%.5f");
+        colHeaders.add("Number of Swap Iterations");
+        colTypes.add("long");
+        colFormat.add("%d");
+        colHeaders.add("Sum of Dissimilarites");
+        colTypes.add("double");
+        colFormat.add("%.5f");
 
         final int rows = 1;
         TwoDimTable table = new TwoDimTable(
@@ -214,10 +241,10 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
     public static void buildPhase(Frame f, Frame ddreer, int k, double[][] medoids, long[] medoidRows, DissimilarityMeasure dissimilarityMeasure) {
         Arrays.fill(medoidRows, -1);
         double[] i = new double[f.numCols()]; // observation i
-        String[] ddreerColnames = new String[]{"D","DR", "E", "ER", "tempD", "tempDR", "tempE", "tempER", "bestD",
+        String[] ddreerColnames = new String[]{"D", "DR", "E", "ER", "tempD", "tempDR", "tempE", "tempER", "bestD",
                 "bestDR", "bestE", "bestER"};
 
-        for (int m=0; m<k; m++) { // pick k initial medoids
+        for (int m = 0; m < k; m++) { // pick k initial medoids
 
             double bestScore = m == 0 ? Double.MAX_VALUE : -1; // minimize for first medoid, maximize for remaining medoids.
 
@@ -226,8 +253,8 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
             // phase, the vector of distances of each observation to it's medoid (Dj) is desired. The current implementation
             // only passes over the data once, but requires serial update of Dj vector. Testing needs to be conducted to
             // determine which approach is faster.
-            for (long iRow=0; iRow<f.numRows(); iRow++) {
-                if (!contains(medoidRows,iRow)) { // for each not-already-chosen observation
+            for (long iRow = 0; iRow < f.numRows(); iRow++) {
+                if (!contains(medoidRows, iRow)) { // for each not-already-chosen observation
                     // Retrieve observation i
                     for (int c = 0; c < f.numCols(); c++)
                         i[c] = f.vec(c).at(iRow);
@@ -240,19 +267,19 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                         bestScore = score._C_j_i;
                         medoidRows[m] = iRow;
                         medoids[m] = ArrayUtils.copyAndFillOf(i, i.length, 0);
-                        ddreer.swap(4,8); // swap "tempD" and "bestD" columns. "bestD" column now holds the current best Dj
-                        ddreer.swap(5,9);
-                        ddreer.swap(6,10);
-                        ddreer.swap(7,11);
+                        ddreer.swap(4, 8); // swap "tempD" and "bestD" columns. "bestD" column now holds the current best Dj
+                        ddreer.swap(5, 9);
+                        ddreer.swap(6, 10);
+                        ddreer.swap(7, 11);
                         ddreer.setNames(ddreerColnames.clone());
                     }
                 }
             }
             assert medoidRows[m] >= 0; // we better have chosen a medoid
-            ddreer.swap(0,8); // swap "D" and "bestD" columns. "D" column now holds current best Dj.
-            ddreer.swap(1,9);
-            ddreer.swap(2,10);
-            ddreer.swap(3,11);
+            ddreer.swap(0, 8); // swap "D" and "bestD" columns. "D" column now holds current best Dj.
+            ddreer.swap(1, 9);
+            ddreer.swap(2, 10);
+            ddreer.swap(3, 11);
             ddreer.setNames(ddreerColnames.clone());
         }
     }
@@ -264,6 +291,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
         double _C_j_i = 0; // collects the contributions of each j
         int _iteration;
         DissimilarityMeasure _dissimilarity_measure;
+
         BUILDScore(double[] candidateMedoid, long candidateMedoidRow, int iteration, DissimilarityMeasure dissimilarityMeasure) {
             _i = candidateMedoid;
             _iRow = candidateMedoidRow;
@@ -273,18 +301,18 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
 
         @Override
         public void map(Chunk... chks) { // ..., D, DR, E, tempD, tempDR, tempE, bestD, bestDR, bestE
-            Chunk dj = chks[chks.length-12];
-            Chunk djRow = chks[chks.length-11];
-            Chunk tempDj = chks[chks.length-8];
-            Chunk tempDjRow = chks[chks.length-7];
-            Chunk tempEj = chks[chks.length-6];
-            Chunk tempEjRow = chks[chks.length-5];
+            Chunk dj = chks[chks.length - 12];
+            Chunk djRow = chks[chks.length - 11];
+            Chunk tempDj = chks[chks.length - 8];
+            Chunk tempDjRow = chks[chks.length - 7];
+            Chunk tempEj = chks[chks.length - 6];
+            Chunk tempEjRow = chks[chks.length - 5];
 
             double d_j_i; // d(j,i)
             double dj_minus_d_j_i; // Dj - d(j,i)
-            double[/*p*/] j = new double[chks.length-12]; // an observation, j
-            for (int r=0; r<chks[0]._len; r++) {
-                for (int c=0; c<j.length; c++) j[c] = chks[c].atd(r);
+            double[/*p*/] j = new double[chks.length - 12]; // an observation, j
+            for (int r = 0; r < chks[0]._len; r++) {
+                for (int c = 0; c < j.length; c++) j[c] = chks[c].atd(r);
 
                 // compute j's distance to the candidate medoid, d(j,i). If `iteration==0`, simply add this to `_C_j_i`.
                 // Otherwise, compare d(j,i) to j's distance to its current medoid, Dj, by computing Dj - d(j,i). If this
@@ -295,8 +323,8 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                     tempDjRow.set(r, _iRow);
                     _C_j_i += d_j_i;
                 } else {
-                    dj_minus_d_j_i =  dj.atd(r) - d_j_i;
-                    if (dj_minus_d_j_i>0) {
+                    dj_minus_d_j_i = dj.atd(r) - d_j_i;
+                    if (dj_minus_d_j_i > 0) {
                         _C_j_i += dj_minus_d_j_i;
                         tempDj.set(r, d_j_i);
                         tempDjRow.set(r, _iRow);
@@ -313,37 +341,39 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
         }
 
         @Override
-        public void reduce(BUILDScore c) { _C_j_i += c._C_j_i; }
+        public void reduce(BUILDScore c) {
+            _C_j_i += c._C_j_i;
+        }
     }
 
     /* Cluster refinement
-    * - SWAP interation - Partitioning Around Medoids (PAM) - Chapter 2 of "Finding Groups in Data", pp. 103-104, Kaufman
-    *   and Rousseeuw
-    * - For each possible swap, (i, h), where i is a selected observation and h is a non-selected observation, compute
-    *   Tih, the contribution of the swap, as follows:
-    *                              --
-    *                              \
-    *                      Tih  =  /   Cjih
-    *                              --
-    *                              j
-    *   Note that there are k*(n-k) possible (i,h) swaps. Compute each non-selected observation's (j) contribution, Cjih,
-    *   to the swap as follows:
-    *   Case 1: d(j,i) != Dj (i.e. i is not j's representative object/medoid)
-    *     Case 1a: d(j,h) < Dj (i.e. j is closer to h than to j's representative object/medoid) => Cjih = d(j,h) - Dj
-    *     Case 1b: d(j,h) >= Dj (i.e. j is closer to its medoid than to h)                      => Cjih = 0
-    *   Case 2: d(j,i) == Dj (i.e. i is j's medoid)
-    *     Case 2a: d(j,h) < Ej (i.e. j is closer to h than to j's second closest medoid)        => Cjih = d(j,h) - Dj
-    *     Case 2b: d(j,h) >= Ej (i.e. j is closer to its second closest medoid than h)          => Cjih = Dj - Ej
-    *
-    * - Record the (i,h) swap that achieved the lowest Tih. If the lowest Tih is >= 0, then terminate the swap phase
-    *   by returning false. On the other hand, if the best Tih is < 0, then perform the swap and return true. */
+     * - SWAP interation - Partitioning Around Medoids (PAM) - Chapter 2 of "Finding Groups in Data", pp. 103-104, Kaufman
+     *   and Rousseeuw
+     * - For each possible swap, (i, h), where i is a selected observation and h is a non-selected observation, compute
+     *   Tih, the contribution of the swap, as follows:
+     *                              --
+     *                              \
+     *                      Tih  =  /   Cjih
+     *                              --
+     *                              j
+     *   Note that there are k*(n-k) possible (i,h) swaps. Compute each non-selected observation's (j) contribution, Cjih,
+     *   to the swap as follows:
+     *   Case 1: d(j,i) != Dj (i.e. i is not j's representative object/medoid)
+     *     Case 1a: d(j,h) < Dj (i.e. j is closer to h than to j's representative object/medoid) => Cjih = d(j,h) - Dj
+     *     Case 1b: d(j,h) >= Dj (i.e. j is closer to its medoid than to h)                      => Cjih = 0
+     *   Case 2: d(j,i) == Dj (i.e. i is j's medoid)
+     *     Case 2a: d(j,h) < Ej (i.e. j is closer to h than to j's second closest medoid)        => Cjih = d(j,h) - Dj
+     *     Case 2b: d(j,h) >= Ej (i.e. j is closer to its second closest medoid than h)          => Cjih = Dj - Ej
+     *
+     * - Record the (i,h) swap that achieved the lowest Tih. If the lowest Tih is >= 0, then terminate the swap phase
+     *   by returning false. On the other hand, if the best Tih is < 0, then perform the swap and return true. */
     private static boolean swapIteration(Frame f, Frame ddreer, int k, double[][] medoids, long[] medoidRows,
                                          DissimilarityMeasure dissimilarityMeasure) {
         double tih = Double.MAX_VALUE;
         double[] hBest = new double[f.numCols()];
         long hRowBest = 0;
         long iRowBest = 0;
-        String[] ddreerColnames = new String[]{"D","DR", "E", "ER", "tempD", "tempDR", "tempE", "tempER", "bestD",
+        String[] ddreerColnames = new String[]{"D", "DR", "E", "ER", "tempD", "tempDR", "tempE", "tempER", "bestD",
                 "bestDR", "bestE", "bestER"};
 
         double[] i;
@@ -352,7 +382,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
             i = medoids[m];
             long iRow = medoidRows[m];
             for (long hRow = 0; hRow < f.numRows(); hRow++) {
-                if (!contains(medoidRows,hRow)) { // don't swap with already-selected medoids
+                if (!contains(medoidRows, hRow)) { // don't swap with already-selected medoids
                     // retrieve h
                     for (int c = 0; c < f.numCols(); c++)
                         h[c] = f.vec(c).at(hRow);
@@ -367,10 +397,10 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                         hRowBest = hRow;
                         iRowBest = iRow;
                         hBest = ArrayUtils.copyAndFillOf(h, h.length, 0);
-                        ddreer.swap(4,8); // swap "tempD" and "bestD" columns. "bestD" column now holds the current best Dj
-                        ddreer.swap(5,9);
-                        ddreer.swap(6,10);
-                        ddreer.swap(7,11);
+                        ddreer.swap(4, 8); // swap "tempD" and "bestD" columns. "bestD" column now holds the current best Dj
+                        ddreer.swap(5, 9);
+                        ddreer.swap(6, 10);
+                        ddreer.swap(7, 11);
                         ddreer.setNames(ddreerColnames.clone());
                     }
                 }
@@ -378,17 +408,17 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
         }
         if (tih < 0) {
             // swap (i,h)
-            for (int z=0; z<medoidRows.length; z++) {
+            for (int z = 0; z < medoidRows.length; z++) {
                 if (medoidRows[z] == iRowBest) {
                     medoidRows[z] = hRowBest;
                     medoids[z] = ArrayUtils.copyAndFillOf(hBest, hBest.length, 0);
                     break;
                 }
             }
-            ddreer.swap(0,8); // swap "D" and "bestD" columns. "D" column now holds current best Dj.
-            ddreer.swap(1,9);
-            ddreer.swap(2,10);
-            ddreer.swap(3,11);
+            ddreer.swap(0, 8); // swap "D" and "bestD" columns. "D" column now holds current best Dj.
+            ddreer.swap(1, 9);
+            ddreer.swap(2, 10);
+            ddreer.swap(3, 11);
             ddreer.setNames(ddreerColnames.clone());
             return true;
         }
@@ -406,6 +436,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
         long[] _medoid_rows;
         double _T_i_h = 0; // the total contribution of swap, Tih
         DissimilarityMeasure _dissimilarity_measure;
+
         SWAPScore(int k, double[] i, double[] h, long iRow, long hRow, double[][] medoids, long[] medoidRows,
                   DissimilarityMeasure dissimilarityMeasure) {
             _k = k;
@@ -449,7 +480,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                     } else {
                         tempDj.set(r, dj.atd(r));
                         tempDjRow.set(r, djRow.at8(r));
-                        distAndRow(j,_h,_medoids,_medoid_rows,_i_row,_h_row,secondClosestDist,secondClosestRow, _dissimilarity_measure);
+                        distAndRow(j, _h, _medoids, _medoid_rows, _i_row, _h_row, secondClosestDist, secondClosestRow, _dissimilarity_measure);
                         tempEj.set(r, secondClosestDist[0]);
                         tempEjRow.set(r, secondClosestRow[0]);
                     }
@@ -464,7 +495,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
                         _T_i_h += ej.atd(r) - dj.atd(r);
                         tempDj.set(r, ej.atd(r));
                         tempDjRow.set(r, ejRow.at8(r));
-                        distAndRow(j,_h,_medoids,_medoid_rows,_i_row,_h_row,secondClosestDist,secondClosestRow, _dissimilarity_measure);
+                        distAndRow(j, _h, _medoids, _medoid_rows, _i_row, _h_row, secondClosestDist, secondClosestRow, _dissimilarity_measure);
                         tempEj.set(r, secondClosestDist[0]);
                         tempEjRow.set(r, secondClosestRow[0]);
                     }
@@ -473,10 +504,12 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
         }
 
         @Override
-        public void reduce(SWAPScore tih) { _T_i_h += tih._T_i_h; }
+        public void reduce(SWAPScore tih) {
+            _T_i_h += tih._T_i_h;
+        }
     }
 
-    static double distance( double[] ds0, double[] ds1, DissimilarityMeasure dissimilarityMeasure) {
+    static double distance(double[] ds0, double[] ds1, DissimilarityMeasure dissimilarityMeasure) {
         double sum = 0;
         if (dissimilarityMeasure == DissimilarityMeasure.MANHATTAN) {
             for (int i = 0; i < ds0.length; i++) sum += Math.abs(ds0[i] - ds1[i]);
@@ -495,8 +528,7 @@ public class PAM extends ClusteringModelBuilder<PAMModel,PAMModel.PAMParameters,
     }
 
     static void distAndRow(double[] j, double[] h, double[][] medoids, long[] medoidRows, long iRow, long hRow,
-                           double[] secondClosestDist, long[] secondClosestRow, DissimilarityMeasure dissimilarityMeasure)
-    {
+                           double[] secondClosestDist, long[] secondClosestRow, DissimilarityMeasure dissimilarityMeasure) {
         double[] firstClosestDist = new double[]{Double.MAX_VALUE};
         long[] firstClosestRow = new long[]{-1};
         secondClosestDist[0] = Double.MAX_VALUE;

@@ -31,10 +31,10 @@ function cleanup () {
   RC="`paste $OUTDIR/status.* | sed 's/[[:blank:]]//g'`"
   if [ "$RC" != "00000" ]; then
     cat $OUTDIR/out.*
-    echo h2o-mli junit tests FAILED
+    echo h2o-pam junit tests FAILED
     exit 1
   else
-    echo h2o-mli junit tests PASSED
+    echo h2o-pam junit tests PASSED
     exit 0
   fi
 }
@@ -65,7 +65,7 @@ MAX_MEM=${H2O_JVM_XMX:-2500m}
 if [ $JACOCO_ENABLED = true ]
 then
     AGENT="../jacoco/jacocoagent.jar"
-    COVERAGE="-javaagent:$AGENT=destfile=build/jacoco/h2o-mli.exec"
+    COVERAGE="-javaagent:$AGENT=destfile=build/jacoco/h2o-pam.exec"
     MAX_MEM=${H2O_JVM_XMX:-8g}
 else
     COVERAGE=""
@@ -86,7 +86,7 @@ JUNIT_RUNNER="water.junit.H2OTestRunner"
 # Cut the   "water/MRThrow.java" down to "water/MRThrow"
 # Slash/dot "water/MRThrow"      becomes "water.MRThrow"
 
-# On this h2o-mli testMultiNode.sh only, force the tests.txt to be in the same order for all machines.
+# On this h2o-pam testMultiNode.sh only, force the tests.txt to be in the same order for all machines.
 # If sorted, the result of the cd/grep varies by machine. 
 # If randomness is desired, replace sort with the unix 'shuf'
 # Use /usr/bin/sort because of cygwin on windows. 
@@ -130,7 +130,7 @@ else
 fi
 
 # Launch last driver JVM.  All output redir'd at the OS level to sandbox files.
-echo Running h2o-mli junit tests...
+echo Running h2o-pam junit tests...
 
 sleep 10
 

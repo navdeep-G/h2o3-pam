@@ -1,6 +1,6 @@
 # Partitioning Around Medoids (PAM)
 
-## Implementation of Partitioning Around Medoids (PAM) in [h2o-3](https://github.com/h2oai/h2o-3)
+## Implementation of Partitioning Around Medoids (PAM) in [H2O-3](https://github.com/h2oai/h2o-3)
 
 ### Pros:
 - Deterministic in nature

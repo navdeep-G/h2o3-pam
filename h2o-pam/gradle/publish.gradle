@@ -65,15 +65,11 @@ publishing {
                     resolveStrategy = Closure.DELEGATE_FIRST
                     name project.name
                     description project.description
-                    url 'https://github.com/h2oai/mli'
-                    inceptionYear '2017'
+                    url 'https://github.com/navdeep-G/h2o3-pam'
+                    inceptionYear '2018'
+                    
 
-                    organization {
-                        name 'H2O.ai'
-                        url  'http://h2o.ai/'
-                    }
-
-                    // H2O licensing
+                    // licensing
                     licenses {
                         license {
                             name 'TODO'
@@ -84,15 +80,9 @@ publishing {
 
                     // Info for contributors
                     scm {
-                        url        'https://github.com/h2oai/mli'
-                        connection 'scm:git:https://github.com/h2oai/mli.git'
-                        developerConnection 'scm:git:git@github.com:h2oai/mli.git'
-                    }
-
-                    // Public H2O JIRA for issue management
-                    issueManagement {
-                        system 'Jira'
-                        url    'http://jira.h2o.ai'
+                        url        'https://github.com/navdeep-G/h2o3-pam'
+                        connection 'scm:git:https://github.com/navdeep-G/h2o3-pam.git'
+                        developerConnection 'scm:git:git@github.com:navdeep-G/h2o3-pam.git'
                     }
                 }
                 // Append basic POM information

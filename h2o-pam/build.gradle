@@ -59,7 +59,7 @@ ext {
 
     // Configure h2o dependency information
     useSnapshotH2o = false
-    h2oProjectBranchNumber = "3.30.0"
+    h2oProjectBranchNumber = "3.32.1"
     if (useSnapshotH2o) {
         h2oProjectBuildNumber = "7"
     }

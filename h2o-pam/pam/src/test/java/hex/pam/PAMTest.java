@@ -5,7 +5,7 @@ import org.junit.Test;
 import water.Job;
 import water.Key;
 import water.TestUtil;
-import water.fvec.FVecTest;
+import water.fvec.FVecFactory;
 import water.fvec.Frame;
 import water.parser.ParseDataset;
 
@@ -25,7 +25,7 @@ public class PAMTest extends TestUtil {
         Frame tf = null;
         Frame preds = null;
         try {
-            FVecTest.makeByteVec(raw, "x\n0\n1\n2\n10\n11\n12\n20\n21\n22");
+            FVecFactory.makeByteVec(raw, "x\n0\n1\n2\n10\n11\n12\n20\n21\n22");
             tf = ParseDataset.parse(parsed, raw);
 
             PAMModel.PAMParameters parms = new PAMModel.PAMParameters();
@@ -55,7 +55,7 @@ public class PAMTest extends TestUtil {
         Frame tf = null;
         Frame preds = null;
         try {
-            FVecTest.makeByteVec(raw, "x\n0\n1\n2\n51\n100\n101\n102");
+            FVecFactory.makeByteVec(raw, "x\n0\n1\n2\n51\n100\n101\n102");
             tf = ParseDataset.parse(parsed, raw);
 
             PAMModel.PAMParameters parms = new PAMModel.PAMParameters();
@@ -84,7 +84,7 @@ public class PAMTest extends TestUtil {
         Frame tf = null;
         Frame preds = null;
         try {
-            FVecTest.makeByteVec(raw, "x\n0\n1\n2\n51\n100\n101\n102");
+            FVecFactory.makeByteVec(raw, "x\n0\n1\n2\n51\n100\n101\n102");
             tf = ParseDataset.parse(parsed, raw);
 
             PAMModel.PAMParameters parms = new PAMModel.PAMParameters();
@@ -208,7 +208,7 @@ public class PAMTest extends TestUtil {
         Frame fr = null;
         Frame preds = null;
         try {
-            FVecTest.makeByteVec(raw, "x\n1\n10\n100");
+            FVecFactory.makeByteVec(raw, "x\n1\n10\n100");
             fr = ParseDataset.parse(parsed, raw);
 
             PAMModel.PAMParameters parms = new PAMModel.PAMParameters();
@@ -236,7 +236,7 @@ public class PAMTest extends TestUtil {
         Frame fr = null;
         Frame preds = null;
         try {
-            FVecTest.makeByteVec(raw, "x\n0\n1\n2\n10\n11\n12\n20\n21\n22");
+            FVecFactory.makeByteVec(raw, "x\n0\n1\n2\n10\n11\n12\n20\n21\n22");
             fr = ParseDataset.parse(parsed, raw);
 
             PAMModel.PAMParameters parms = new PAMModel.PAMParameters();

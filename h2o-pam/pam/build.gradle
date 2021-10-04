@@ -32,7 +32,7 @@ dependencies {
 }
 
 task downloadTestLibs(type: Download) {
-    src "http://h2o-release.s3.amazonaws.com/h2o/rel-zipf/7/maven/repo/ai/h2o/h2o-test-support/${h2oProjectVersion}/h2o-test-support-${h2oProjectVersion}.jar"
+    src "http://h2o-release.s3.amazonaws.com/h2o/rel-zizler/1/maven/repo/ai/h2o/h2o-test-support/${h2oProjectVersion}/h2o-test-support-${h2oProjectVersion}.jar"
     dest "$rootDir/lib"
 }
 

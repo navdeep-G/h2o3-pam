@@ -37,9 +37,3 @@ To learn more about PAM and its theoretical foundation, you can refer to the fol
 - Kaufman, L., & Rousseeuw, P.J. (1990). *Finding Groups in Data: An Introduction to Cluster Analysis* (pp. 102-104).
 - [Wikipedia: K-medoids](https://en.wikipedia.org/wiki/K-medoids)
 - [Wikibooks: Data Mining Algorithms in R – Partitioning Around Medoids (PAM)](https://en.wikibooks.org/wiki/Data_Mining_Algorithms_In_R/Clustering/Partitioning_Around_Medoids_(PAM))
-
-For more detailed usage and examples, please refer to the documentation within the H2O-3 platform.
-
----
-
-Thank you for your interest in this PAM implementation!
